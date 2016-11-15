@@ -4,8 +4,6 @@ alphabet = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя"
 vowels= "аеёиоуыэюя"
 vowels_hash = {}
 
-for i in 0..vowels.length - 1
-  vowels_hash[vowels[i]] = alphabet.index(vowels[i]) + 1
-end
+vowels.each_char {|vowel| vowels_hash[vowel] = alphabet.index(vowel) + 1}
 
 print vowels_hash

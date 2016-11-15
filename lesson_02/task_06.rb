@@ -7,7 +7,7 @@
 Вычислить и вывести на экран итоговую сумму всех покупок в "корзине".
 =end
 
-cart = Hash.new
+cart = {}
 sum = 0
 loop do
   print "Введите название товара (или \"стоп\"): "
@@ -19,8 +19,6 @@ loop do
   count = gets.chomp.to_f
   
   cart[name] = {"price" => price, "count" => count}  
-  # sum += price * count
-  # чтобы потренировать доступ к хешам, посчитаем сумму ниже
 end 
 
 cart.each {|name, hash| sum += hash["price"] * hash["count"]}

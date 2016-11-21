@@ -1,19 +1,24 @@
 class Station
+  
   attr_reader :name, :trains
+
   def initialize(name)
     @name = name
     @trains = []
     puts "Построена станция #{name}"
   end
+
   def get_train(train)
     trains << train
     puts "На станцию #{name} прибыл поезд №#{train.number}"
   end
+
   def send_train(train)
     trains.delete(train)
     train.station = nil
     puts "Со станции #{name} отправился поезд №#{train.number}"
   end
+
   def show_trains(type = "all")
       if type == "all"
         puts "Поезда на станции #{name}: "
@@ -26,17 +31,21 @@ class Station
 end
 
 class Route
+  
   attr_accessor :stations, :from, :to
+  
   def initialize (from, to)
     @from = from
     @to = to
     @stations = [from, to]
     puts "Создан маршрут #{from.name} - #{to.name}"
   end
+
   def add_station(station)
     self.stations.insert(-2, station) 
     puts "К маршруту #{from.name} - #{to.name} добавлена станция #{station.name}"
   end
+
   def remove_station(station)
     if station == stations.first || station == stations.last
       puts "Первую и последнюю станции маршрута удалять нельзя!"
@@ -45,6 +54,7 @@ class Route
       puts "Из маршрута #{from.name} - #{to.name} удалена станция #{station.name}"
     end
   end
+
   def show_stations
     puts "В маршрут #{from.name} - #{to.name} входят станции: "
     stations.each{|station| puts " #{station.name}" }
@@ -52,8 +62,10 @@ class Route
 end
 
 class Train
+
   attr_accessor :speed, :number, :car_count, :route, :station
   attr_reader :type
+
   def initialize(number, type, car_count)
     @number = number
     @type = type
@@ -61,9 +73,11 @@ class Train
     @speed = 0
     puts "Создан поезд № #{number}. Тип: #{type}. Количество вагонов: #{car_count}."
   end
+
   def stop
     self.speed = 0
   end
+
   def add_car
     if speed.zero? 
       self.car_count += 1
@@ -72,6 +86,7 @@ class Train
       puts "На ходу нельзя прицеплять вагоны!"
     end
   end
+
   def remove_car
     if car_count.zero?
       puts "Вагонов уже не осталось."
@@ -82,10 +97,12 @@ class Train
       puts "На ходу нельзя отцеплять вагоны!"
     end
   end
+
   def take_route(route)
     self.route = route
     puts "Поезду №#{number} задан маршрут #{route.from.name} - #{route.to.name}" 
   end
+
   def go_to(station)
     if route.nil?
       puts "Без маршрута поезд заблудится."
@@ -96,6 +113,7 @@ class Train
       puts "Станция #{station.name} не входит в маршрут поезда №#{number}"
     end
   end
+  
   def stations_around
     if route.nil?
       puts "Маршрут не задан"

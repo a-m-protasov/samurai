@@ -19,13 +19,13 @@ class Station
     puts "Со станции #{name} отправился поезд №#{train.number}"
   end
 
-  def show_trains(type = "all")
-      if type == "all"
-        puts "Поезда на станции #{name}: "
-        trains.each{|train| puts train.number}
-      else
+  def show_trains(type = nil)
+      if type
         puts "Поезда на станции #{name} типа #{type}: "  
         trains.each{|train| puts train.number if train.type == type}
+      else
+        puts "Поезда на станции #{name}: "
+        trains.each{|train| puts train.number}
       end
   end
 end
@@ -35,28 +35,26 @@ class Route
   attr_accessor :stations, :from, :to
   
   def initialize (from, to)
-    @from = from
-    @to = to
     @stations = [from, to]
     puts "Создан маршрут #{from.name} - #{to.name}"
   end
 
   def add_station(station)
     self.stations.insert(-2, station) 
-    puts "К маршруту #{from.name} - #{to.name} добавлена станция #{station.name}"
+    puts "К маршруту #{stations.first.name} - #{stations.last.name} добавлена станция #{station.name}"
   end
 
   def remove_station(station)
-    if station == stations.first || station == stations.last
+    if [stations.first, stations.last].include?(station)
       puts "Первую и последнюю станции маршрута удалять нельзя!"
     else 
       self.stations.delete(station)
-      puts "Из маршрута #{from.name} - #{to.name} удалена станция #{station.name}"
+      puts "Из маршрута #{stations.first.name} - #{stations.last.name} удалена станция #{station.name}"
     end
   end
 
   def show_stations
-    puts "В маршрут #{from.name} - #{to.name} входят станции: "
+    puts "В маршрут #{stations.first.name} - #{stations.last.name} входят станции: "
     stations.each{|station| puts " #{station.name}" }
   end  
 end
@@ -100,20 +98,23 @@ class Train
 
   def take_route(route)
     self.route = route
-    puts "Поезду №#{number} задан маршрут #{route.from.name} - #{route.to.name}" 
+    puts "Поезду №#{number} задан маршрут #{route.stations.first.name} - #{route.stations.last.name}" 
   end
 
   def go_to(station)
     if route.nil?
       puts "Без маршрута поезд заблудится."
+    elsif @station == station
+      puts "Поезд №#{@number} и так на станции #{@station.name}"
     elsif route.stations.include?(station)
-      self.station = station
+      @station.send_train(self) if @station
+      @station = station
       station.get_train(self)
     else
       puts "Станция #{station.name} не входит в маршрут поезда №#{number}"
     end
   end
-  
+
   def stations_around
     if route.nil?
       puts "Маршрут не задан"
@@ -150,7 +151,12 @@ train3 = Train.new(3,"passenger", 14)
 train4 = Train.new(4, "cargo", 22)
 
 train1.take_route(route_kr1_sci)
-train1.go_to(station_adl)
+train1.go_to(station_sci)
+train1.go_to(station_tps)
+
+station_sci.show_trains
+station_tps.show_trains
+
 train1.go_to(station_tps)
 train1.go_to(station_sci)
 
@@ -162,6 +168,4 @@ station_tps.show_trains("cargo")
 station_adl.show_trains("passenger")
 train2.stations_around
 train1.stations_around
-
-
 

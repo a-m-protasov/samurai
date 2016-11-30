@@ -30,6 +30,6 @@ class Station
 
   private
 
-  attr_reader :trains
+  attr_reader :trains # Используем только внутри класса. 
 
 end

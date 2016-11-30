@@ -9,7 +9,7 @@ require_relative 'passenger_car'
 stations = []
 trains = []
 
-	puts %Q(
+puts %Q(
 Выберите пункт меню:
 0. Выход
 1. Создать станцию

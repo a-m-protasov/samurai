@@ -1,6 +1,7 @@
 require_relative 'station'
 require_relative 'route'
 require_relative 'train'
+require_relative 'car'
 require_relative 'cargo_train'
 require_relative 'cargo_car'
 require_relative 'passenger_train'
@@ -8,6 +9,7 @@ require_relative 'passenger_car'
 
 stations = []
 trains = []
+CAR_TYPES = {'cargo' => CargoCar, 'passenger' => PassengerCar}
 
 puts %Q(
 0. Выход
@@ -56,13 +58,11 @@ loop do
     else 
       puts "К какому? (введите номер)"
       number = gets.chomp
-      train = trains.select{|train| train.number == number}.first
+      train = trains.detect{|train| train.number == number}
       if train.nil?
         puts "Поезда с таким номером нет"
-      elsif train.type == "cargo"
-        train.add_car(CargoCar.new)
-      elsif train.type == "passenger"
-        train.add_car(PassengerCar.new)
+      else
+        train.add_car(CAR_TYPES[train.type].new)
       end
     end
 
@@ -72,13 +72,13 @@ loop do
     else 
       puts "От какого? (введите номер)"
       number = gets.chomp
-      train = trains.select{|train| train.number == number}.first
+      train = trains.detect{|train| train.number == number}
       if train.nil?
         puts "Поезда с таким номером нет"
       elsif train.cars.empty?
         puts "У этого поезда и так нет вагонов"
       else 
-        train.remove_car(train.cars[-1])
+        train.remove_car(train.cars.last)
       end
     end
 
@@ -90,13 +90,13 @@ loop do
     else 
       puts "Какой поезд? (введите номер)"
       number = gets.chomp
-      train = trains.select{|train| train.number == number}.first
+      train = trains.detect{|train| train.number == number}
       if train.nil?
         puts "Поезда с таким номером нет"
       else 
         puts "На какую станцию? (название)"
         name = gets.chomp
-        station = stations.select{|station| station.name == name}.first
+        station = stations.detect{|station| station.name == name}
         if station.nil?
           puts "Такой станции нет" 
         else 
@@ -115,7 +115,7 @@ loop do
     else
       puts "На какой? (название)"
       name = gets.chomp
-      station = stations.select{|station| station.name == name}.first
+      station = stations.detect{|station| station.name == name}
       if station.nil?
         puts "Такой станции нет" 
       else 

@@ -1,4 +1,5 @@
-require_relative 'modules.rb'
+require_relative 'instance_counter'
+require_relative 'manufacturer'
 require_relative 'station'
 require_relative 'route'
 require_relative 'train'
@@ -39,17 +40,21 @@ loop do
   when 2 #Создать поезд
     puts "C каким номером?"
     number = gets.chomp
-    puts "1 - пассажирский, 2 - грузовой"
-    choice = gets.chomp.to_i
-    case choice
-    when 1
-      trains << PassengerTrain.new(number)
-      puts "Создан пассажирский поезд №#{number}"
-    when 2
-      trains << CargoTrain.new(number)
-      puts "Создан грузовой поезд №#{number}"
+    if Train.find(number).nil?
+      puts "1 - пассажирский, 2 - грузовой"
+      choice = gets.chomp.to_i
+      case choice
+      when 1
+        trains << PassengerTrain.new(number)
+        puts "Создан пассажирский поезд №#{number}"
+      when 2
+        trains << CargoTrain.new(number)
+        puts "Создан грузовой поезд №#{number}"
+      else 
+        puts "Поезд не создан. Надо было ввести 1 или 2"
+      end
     else 
-      puts "Поезд не создан. Надо было ввести 1 или 2"
+      puts "Поезд № #{number} уже существует"
     end
 
   when 3 #Прицепить вагон к поезду
@@ -122,6 +127,7 @@ loop do
         station.show_trains
       end
     end
+    
   else
     puts "Необходимо выбрать один из предложенных вариантов"
   end

@@ -82,7 +82,6 @@ def train_to_station
   station.get_train(train)
 rescue RuntimeError => e
   puts "Ошибка: #{e.message}"
-  retry unless Train.all.empty? || Station.all.empty?
 end
 
 def station_list

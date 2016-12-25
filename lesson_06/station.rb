@@ -7,9 +7,9 @@ class Station
   def initialize(name)
     @name = name
     @trains = []
+    validate!
     @@stations << self
     register_instance
-    validate!
   end
 
   def self.all
@@ -17,6 +17,7 @@ class Station
   end
     
   def get_train(train)
+    raise "Поезд #{train.number} и так на станции #{name}" if @trains.include?(train)
     @trains << train
     puts "На станцию #{name} прибыл поезд №#{train.number}"
   end

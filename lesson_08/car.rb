@@ -1,3 +1,4 @@
+# Test
 class Car
   include Manufacturer
   include InstanceCounter

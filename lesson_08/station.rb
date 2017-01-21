@@ -15,7 +15,7 @@ class Station
   def self.all
     @@stations
   end
-    
+
   def get_train(train)
     raise "Поезд #{train.number} и так на станции #{name}" if @trains.include?(train)
     @trains << train
@@ -28,14 +28,14 @@ class Station
     puts "Со станции #{name} отправился поезд №#{train.number}"
   end
 
-  def iterate_trains(&block)
-    raise "На станции нет поездов" if @trains.empty?
-    @trains.each{|train| block.call(train)}
+  def iterate_trains
+    raise 'На станции нет поездов' if @trains.empty?
+    @trains.each { |train| yield(train) }
   end
 
-protected
+  protected
+
   def validate!
-    raise "Название станции не может быть пустым, попробуйте еще раз." if name.empty?
+    raise 'Название станции не может быть пустым, попробуйте еще раз.' if name.empty?
   end
-
 end

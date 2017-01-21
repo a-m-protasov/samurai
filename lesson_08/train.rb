@@ -1,5 +1,4 @@
 class Train
-
   include Manufacturer
   include InstanceCounter
   include Valid
@@ -33,55 +32,60 @@ class Train
   end
 
   def add_car(car)
-    raise "На ходу нельзя прицеплять вагоны!" unless speed.zero? 
-    self.cars << car
+    raise 'На ходу нельзя прицеплять вагоны!' unless speed.zero?
+    cars << car
     puts "К поезду №#{number} прицепили вагон."
   rescue RuntimeError => e
-    puts "Ошибка: #{e.message}" 
+    puts "Ошибка: #{e.message}"
   end
 
   def remove_car(car)
-    raise "На ходу нельзя отцеплять вагоны!" unless speed.zero? 
-    raise "Такого вагона в этом поезде нет" if !cars.include?(car)
-    self.cars.delete(car)
+    raise 'На ходу нельзя отцеплять вагоны!' unless speed.zero?
+    raise 'Такого вагона в этом поезде нет' unless cars.include?(car)
+    cars.delete(car)
     puts "От поезда №#{number} отцепили вагон."
   rescue RuntimeError => e
-    puts "Ошибка: #{e.message}" 
+    puts "Ошибка: #{e.message}"
   end
 
   def take_route(route)
     self.route = route
-    puts "Поезду №#{number} задан маршрут #{route.name}" 
+    puts "Поезду №#{number} задан маршрут #{route.name}"
   end
 
   def go_to(station)
-    raise "Без маршрута поезд заблудится." if route.nil?
-    raise "Поезд №#{@number} и так на станции #{@station.name}" if @station == station 
-    raise "Станция #{station.name} не входит в маршрут поезда №#{number}" unless route.stations.include?(station)
+    raise 'Без маршрута поезд заблудится.' if route.nil?
+    raise "Поезд №#{@number} и так на станции #{@station.name}" if @station == station
+    unless route.stations.include?(station)
+      raise "Станция #{station.name} не входит в маршрут поезда №#{number}"
+    end
     @station.send_train(self) if @station
     @station = station
     station.get_train(self)
   rescue RuntimeError => e
-    puts "Ошибка: #{e.message}" 
+    puts "Ошибка: #{e.message}"
   end
 
   def stations_around
-    raise "Маршрут не задан" if route.nil?
+    raise 'Маршрут не задан' if route.nil?
     station_index = route.stations.index(station)
     puts "Сейчас поезд на станции #{station.name}."
     puts "Предыдущая станция - #{route.stations[station_index - 1].name}." if station_index != 0
-    puts "Следующая - #{route.stations[station_index + 1].name}." if station_index != route.stations.size - 1
+    if station_index != route.stations.size - 1
+      puts "Следующая - #{route.stations[station_index + 1].name}."
+    end
   rescue RuntimeError => e
-    puts "Ошибка: #{e.message}"     
+    puts "Ошибка: #{e.message}"
   end
 
-  def iterate_cars(&block)
-    raise "К поезду не прицеплено вагонов" if @cars.empty?
-    @cars.each{|car| block.call(car)}
+  def iterate_cars
+    raise 'К поезду не прицеплено вагонов' if @cars.empty?
+    @cars.each { |car| yield(car) }
   end
 
-private
+  private
+
   def validate!
-    raise "Номер поезда не соответствует шаблону (ххххх или ххх-хх)" if number !~ TRAIN_NUMBER
+    raise 'Номер поезда не соответствует шаблону (ххххх или ххх-хх)' if number !~ TRAIN_NUMBER
   end
 end

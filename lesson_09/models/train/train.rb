@@ -1,13 +1,13 @@
 class Train
   include Manufacturer
   include InstanceCounter
-  include Valid
+  include Validation
 
   attr_accessor :speed, :number, :cars, :route, :station
   attr_reader :type
   @@trains = {}
-
   TRAIN_NUMBER = /^[a-z0-9]{3}-?[a-z0-9]{2}$/i
+  
 
   def initialize(number, type)
     @number = number
@@ -81,11 +81,5 @@ class Train
   def iterate_cars
     raise 'К поезду не прицеплено вагонов' if @cars.empty?
     @cars.each { |car| yield(car) }
-  end
-
-  private
-
-  def validate!
-    raise 'Номер поезда не соответствует шаблону (ххххх или ххх-хх)' if number !~ TRAIN_NUMBER
   end
 end

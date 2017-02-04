@@ -1,8 +1,9 @@
 class Station
   include InstanceCounter
-  include Valid
+  include Validation
   @@stations = []
   attr_reader :name
+  validate :name, :presence
 
   def initialize(name)
     @name = name
@@ -33,9 +34,4 @@ class Station
     @trains.each { |train| yield(train) }
   end
 
-  protected
-
-  def validate!
-    raise 'Название станции не может быть пустым, попробуйте еще раз.' if name.empty?
-  end
 end
